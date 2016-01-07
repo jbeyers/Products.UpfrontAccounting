@@ -150,7 +150,7 @@ class CreditNote(BaseContent, BrowserDefaultMixin):
             tax = self.getSalesTaxPercentage()
         amount = self.getAmount()
         if not amount:
-            amount = self.getZeroMoneyInstance()
+            amount = Money('0.0', self.getAccountingCurrency())
         return amount + (amount * tax / 100)
 
     security.declareProtected(permissions.View, 'getCustomerAccountTitle')

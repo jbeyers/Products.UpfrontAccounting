@@ -276,6 +276,20 @@ class Account(BaseFolder, BrowserDefaultMixin):
                 balance = self._daily_balances[key] + amount
                 self._daily_balances[key] = balance
 
+    security.declareProtected(ManageAccounts, 'fix_balances')
+    def fix_balances(self):
+        '''Calculate the correct daily balances using the actual transactions'''
+
+        current_date = self.Opened
+        current_balance = self.OpeningBalance
+        for entry in self.getTransactionEntriesAndBalances():
+            if entry.getTransactionDate() != current_date:
+                self._daily_balances[self._get_key(current_date)] = current_balance
+            current_date = entry.getTransactionDate()
+            current_balance = entry.balance
+        self._daily_balances[self._get_key(current_date)] = current_balance
+        self.Balance = current_balance
+
     security.declareProtected(permissions.View, 'getTransactionEntriesAndBalances')
     def getTransactionEntriesAndBalances(self, period=None):
         """ Return transaction entries and their balances """

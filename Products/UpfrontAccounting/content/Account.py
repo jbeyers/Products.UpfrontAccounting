@@ -296,7 +296,7 @@ class Account(BaseFolder, BrowserDefaultMixin):
         if period:
             startdate = DateTime() - period
 
-        entries = self.getTransactionEntries()
+        entries = [e for e in self.getTransactionEntries() if e]
         if not entries:
             return []
 

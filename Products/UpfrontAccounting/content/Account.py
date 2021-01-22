@@ -296,7 +296,13 @@ class Account(BaseFolder, BrowserDefaultMixin):
         if period:
             startdate = DateTime() - period
 
-        entries = [e for e in self.getTransactionEntries() if e]
+        entries = self.getTransactionEntries()
+        # entries is sometimes not iterable, which is fine.
+        # But sometimes it contains a None, which confuses downstream stuff.
+        try:
+            entries = [e for e in self.getTransactionEntries() if e]
+        except:
+            pass
         if not entries:
             return []
 
